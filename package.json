@@ -9,12 +9,12 @@
     "serve": "vite preview"
   },
   "devDependencies": {
-    "@types/node": "^17.0.31",
-    "@rollup/plugin-alias": "^3.1.9",
-    "@rollup/plugin-commonjs": "^22.0.0",
-    "@rollup/plugin-replace": "^4.0.0",
-    "phaser": "^3.55.2",
-    "typescript": "^4.6.4",
-    "vite": "^2.9.13"
+    "@types/node": "^20.4.5",
+    "@rollup/plugin-alias": "^5.0.0",
+    "@rollup/plugin-commonjs": "^25.0.3",
+    "@rollup/plugin-replace": "^5.0.2",
+    "phaser": "^3.60.0",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.7"
   }
 }
