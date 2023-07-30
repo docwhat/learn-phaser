@@ -6,6 +6,8 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
+    "gh-pages:build": "vite build --base='/learn-phaser/'",
+    "gh-pages:deploy": "gh-pages -d dist",
     "serve": "vite preview"
   },
   "devDependencies": {
@@ -13,6 +15,7 @@
     "@rollup/plugin-commonjs": "^25.0.3",
     "@rollup/plugin-replace": "^5.0.2",
     "@types/node": "^20.4.5",
+    "gh-pages": "^5.0.0",
     "phaser": "^3.60.0",
     "typescript": "^5.1.6",
     "vite": "^4.4.7"
