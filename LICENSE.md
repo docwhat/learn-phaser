@@ -1,4 +1,3 @@
-
 ---
 
 # license for the template
