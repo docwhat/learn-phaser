@@ -1,0 +1,28 @@
+# A GitHub workflow action to run all the tests
+name: Repo tests
+
+on: [workflow_dispatch, workflow_call]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  test-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Trunk
+        uses: trunk-io/trunk-action@v1
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+
+      - name: Installs deps
+        run: npm install
+
+      - name: Build
+        run: npm run build
