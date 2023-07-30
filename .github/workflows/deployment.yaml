@@ -1,0 +1,23 @@
+name: Deployment
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+      - name: deploy
+        run: |
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          npm run deploy -- -u "github-actions-bot <support+actions@github.com>"
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
