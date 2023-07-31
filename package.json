@@ -7,6 +7,7 @@
     "build": "vite build",
     "dev": "vite",
     "gh-pages:build": "vite build --base='/learn-phaser/'",
+    "gh-pages:clean": "gh-pages-clean",
     "gh-pages:deploy": "gh-pages -d dist",
     "serve": "vite preview",
     "upgrade": "npx npm-check-updates -i"
