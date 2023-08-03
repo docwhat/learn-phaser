@@ -1,5 +1,5 @@
-import { defineConfig } from "vite";
-import replace from "@rollup/plugin-replace";
+import { defineConfig } from "vite"
+import replace from "@rollup/plugin-replace"
 
 export default defineConfig({
   build: {
@@ -19,4 +19,4 @@ export default defineConfig({
       ],
     },
   },
-});
+})
