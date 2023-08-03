@@ -1,16 +1,23 @@
 export class MoveKeys {
-  upKeys: Phaser.Input.Keyboard.Key[] = []
-  downKeys: Phaser.Input.Keyboard.Key[] = []
-  leftKeys: Phaser.Input.Keyboard.Key[] = []
-  rightKeys: Phaser.Input.Keyboard.Key[] = []
-  actionKeys: Phaser.Input.Keyboard.Key[] = []
+  private scene: Phaser.Scene
+  private upKeys: Phaser.Input.Keyboard.Key[] = []
+  private downKeys: Phaser.Input.Keyboard.Key[] = []
+  private leftKeys: Phaser.Input.Keyboard.Key[] = []
+  private rightKeys: Phaser.Input.Keyboard.Key[] = []
+  private actionKeys: Phaser.Input.Keyboard.Key[] = []
 
   constructor(scene: Phaser.Scene) {
-    if (!scene.input.keyboard) {
+    this.scene = scene
+    this.initKeyboard()
+  }
+
+  initKeyboard() {
+    if (!this.scene.input.keyboard) {
       return
     }
+
     const codes = Phaser.Input.Keyboard.KeyCodes
-    const addKey = (key: number) => scene.input.keyboard!.addKey(key)
+    const addKey = (key: number) => this.scene.input.keyboard!.addKey(key)
 
     this.upKeys = [addKey(codes.UP), addKey(codes.W)]
     this.downKeys = [addKey(codes.DOWN), addKey(codes.S)]
