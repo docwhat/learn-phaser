@@ -4,13 +4,12 @@ import EvilRedSquare from "../enemies/EvilRedSquare"
 
 // Store the player character in a variable of type Phaser.GameObjects.Image
 let player: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
-// Store the cursor keys in a variable of type Phaser.Types.Input.Keyboard.CursorKeys
-let moveKeys: MoveKeys
 // Store the speed of the player character in a variable of type number
 let speed: number = 2
 
 export default class Game extends Phaser.Scene {
   private enemies!: Physics.Arcade.Group
+  private moveKeys!: MoveKeys
 
   constructor() {
     super("game")
@@ -57,23 +56,23 @@ export default class Game extends Phaser.Scene {
     if (!this.input.keyboard) {
       return
     }
-    moveKeys = new MoveKeys(this)
+    this.moveKeys = new MoveKeys(this)
   }
 
   update() {
     let moveX: number = 0
     let moveY: number = 0
 
-    if (moveKeys.up()) {
+    if (this.moveKeys.up()) {
       moveY -= 1
     }
-    if (moveKeys.down()) {
+    if (this.moveKeys.down()) {
       moveY += 1
     }
-    if (moveKeys.left()) {
+    if (this.moveKeys.left()) {
       moveX -= 1
     }
-    if (moveKeys.right()) {
+    if (this.moveKeys.right()) {
       moveX += 1
     }
 
@@ -86,7 +85,7 @@ export default class Game extends Phaser.Scene {
       player.y += moveY * speed
 
       // Turbo mode! Hold the spacebar to move faster.
-      if (moveKeys.action()) {
+      if (this.moveKeys.action()) {
         player.x += moveX * speed
         player.y += moveY * speed
       }
