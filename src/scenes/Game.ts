@@ -1,41 +1,68 @@
-import Phaser from "phaser"
+import Phaser, { Physics } from "phaser"
 import { MoveKeys } from "../movekeys"
+import EvilRedSquare from "../enemies/EvilRedSquare"
 
 // Store the player character in a variable of type Phaser.GameObjects.Image
-var player: Phaser.GameObjects.Image
+let player: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
 // Store the cursor keys in a variable of type Phaser.Types.Input.Keyboard.CursorKeys
-var moveKeys: MoveKeys
+let moveKeys: MoveKeys
 // Store the speed of the player character in a variable of type number
-var speed: number = 2
+let speed: number = 2
 
-export default class Demo extends Phaser.Scene {
+export default class Game extends Phaser.Scene {
+  private enemies!: Physics.Arcade.Group
+
   constructor() {
-    super("GameScene")
-  }
-
-  preload() {
-    // A player character image for rotating.
-    this.load.image("player", "assets/player.png")
+    super("game")
   }
 
   create() {
     // Create the player character in the center of the screen, no matter what the screen size is.
-    player = this.add.image(
+    player = this.physics.add.image(
       this.scale.width / 2,
       this.scale.height / 2,
       "player",
     )
     player.setAngle(0)
+    player.setCollideWorldBounds(true)
+
+    // Enemies
+    this.enemies = this.physics.add.group()
+    this.enemies.add(
+      new EvilRedSquare(this, this.scale.width / 4, this.scale.height / 4),
+    )
+    this.enemies.add(
+      new EvilRedSquare(
+        this,
+        (3 * this.scale.width) / 4,
+        this.scale.height / 4,
+      ),
+    )
+    this.enemies.add(
+      new EvilRedSquare(
+        this,
+        this.scale.width / 4,
+        (3 * this.scale.height) / 4,
+      ),
+    )
+    this.physics.add.collider(
+      this.enemies,
+      player,
+      this.handleHit,
+      undefined,
+      this,
+    )
+
+    // Controls
     if (!this.input.keyboard) {
       return
     }
-
     moveKeys = new MoveKeys(this)
   }
 
   update() {
-    var moveX: number = 0
-    var moveY: number = 0
+    let moveX: number = 0
+    let moveY: number = 0
 
     if (moveKeys.up()) {
       moveY -= 1
@@ -64,22 +91,18 @@ export default class Demo extends Phaser.Scene {
         player.y += moveY * speed
       }
     }
-
-    this.checkBounds()
   }
 
-  checkBounds() {
-    // If the character goes out of bounds, wrap around to the other side of the screen.
-    if (player.x > this.scale.width) {
-      player.x -= this.scale.width
-    } else if (player.x < 0) {
-      player.x += this.scale.width
-    }
-
-    if (player.y > this.scale.height) {
-      player.y -= this.scale.height
-    } else if (player.y < 0) {
-      player.y += this.scale.height
-    }
+  private handleHit(
+    playerObject:
+      | Phaser.Tilemaps.Tile
+      | Phaser.Types.Physics.Arcade.GameObjectWithBody,
+    enemyObject:
+      | Phaser.Tilemaps.Tile
+      | Phaser.Types.Physics.Arcade.GameObjectWithBody,
+  ) {
+    const player = playerObject as Phaser.Physics.Arcade.Image
+    this.physics.pause()
+    player.setTint(0xff0000)
   }
 }
