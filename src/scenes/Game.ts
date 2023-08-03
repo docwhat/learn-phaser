@@ -2,12 +2,12 @@ import Phaser, { Physics } from "phaser"
 import { MoveKeys } from "../movekeys"
 import EvilRedSquare from "../enemies/EvilRedSquare"
 
-// Store the player character in a variable of type Phaser.GameObjects.Image
-let player: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
-// Store the speed of the player character in a variable of type number
-let speed: number = 2
-
 export default class Game extends Phaser.Scene {
+  // Store the player character in a variable of type Phaser.GameObjects.Image
+  private player!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
+  // Store the speed of the player character in a variable of type number
+  private speed: number = 2
+
   private enemies!: Physics.Arcade.Group
   private moveKeys!: MoveKeys
 
@@ -17,13 +17,13 @@ export default class Game extends Phaser.Scene {
 
   create() {
     // Create the player character in the center of the screen, no matter what the screen size is.
-    player = this.physics.add.image(
+    this.player = this.physics.add.image(
       this.scale.width / 2,
       this.scale.height / 2,
       "player",
     )
-    player.setAngle(0)
-    player.setCollideWorldBounds(true)
+    this.player.setAngle(0)
+    this.player.setCollideWorldBounds(true)
 
     // Enemies
     this.enemies = this.physics.add.group()
@@ -46,7 +46,7 @@ export default class Game extends Phaser.Scene {
     )
     this.physics.add.collider(
       this.enemies,
-      player,
+      this.player,
       this.handleHit,
       undefined,
       this,
@@ -60,34 +60,18 @@ export default class Game extends Phaser.Scene {
   }
 
   update() {
-    let moveX: number = 0
-    let moveY: number = 0
+    // TODO: changing angle shouldn't not be instantanious.
+    const vector = this.moveKeys.getVector()
 
-    if (this.moveKeys.up()) {
-      moveY -= 1
-    }
-    if (this.moveKeys.down()) {
-      moveY += 1
-    }
-    if (this.moveKeys.left()) {
-      moveX -= 1
-    }
-    if (this.moveKeys.right()) {
-      moveX += 1
-    }
+    if (vector.length() > 0) {
+      this.player.angle = vector.angle() * (180 / Math.PI)
 
-    // Only change the character's angle if the character is moving.
-    if (moveX != 0 || moveY != 0) {
-      var angle = Math.atan2(moveY, moveX) * (180 / Math.PI) + 90
-      player.setAngle(angle)
-
-      player.x += moveX * speed
-      player.y += moveY * speed
-
-      // Turbo mode! Hold the spacebar to move faster.
       if (this.moveKeys.action()) {
-        player.x += moveX * speed
-        player.y += moveY * speed
+        this.player.x += vector.x * this.speed * 2
+        this.player.y += vector.y * this.speed * 2
+      } else {
+        this.player.x += vector.x * this.speed
+        this.player.y += vector.y * this.speed
       }
     }
   }

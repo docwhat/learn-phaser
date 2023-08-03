@@ -9,22 +9,18 @@ export class MoveKeys {
     if (!scene.input.keyboard) {
       return
     }
+    const codes = Phaser.Input.Keyboard.KeyCodes
+    const addKey = (key: number) => scene.input.keyboard!.addKey(key)
 
-    this.upKeys = [
-      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
-      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-    ]
-    this.downKeys = [
-      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
-      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-    ]
-    this.leftKeys = [
-      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
-      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-    ]
-    this.rightKeys = [
-      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
-      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+    this.upKeys = [addKey(codes.UP), addKey(codes.W)]
+    this.downKeys = [addKey(codes.DOWN), addKey(codes.S)]
+    this.leftKeys = [addKey(codes.LEFT), addKey(codes.A)]
+    this.rightKeys = [addKey(codes.RIGHT), addKey(codes.D)]
+
+    this.actionKeys = [
+      addKey(codes.SPACE),
+      addKey(codes.ENTER),
+      addKey(codes.SHIFT),
     ]
   }
 
@@ -42,5 +38,24 @@ export class MoveKeys {
   }
   action(): boolean {
     return this.actionKeys.some((key) => key.isDown)
+  }
+
+  getVector(): Phaser.Math.Vector2 {
+    let vector = new Phaser.Math.Vector2(0, 0)
+
+    if (this.up()) {
+      vector.y -= 1
+    }
+    if (this.down()) {
+      vector.y += 1
+    }
+    if (this.left()) {
+      vector.x -= 1
+    }
+    if (this.right()) {
+      vector.x += 1
+    }
+
+    return vector.normalize()
   }
 }
