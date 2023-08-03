@@ -1,11 +1,11 @@
 export class MoveKeys {
   private scene: Phaser.Scene
-  private upKeys: Phaser.Input.Keyboard.Key[] = []
-  private downKeys: Phaser.Input.Keyboard.Key[] = []
-  private leftKeys: Phaser.Input.Keyboard.Key[] = []
-  private rightKeys: Phaser.Input.Keyboard.Key[] = []
-  private actionKeys: Phaser.Input.Keyboard.Key[] = []
-  private pads: Phaser.Input.Gamepad.Gamepad[] = []
+  private ups: (() => boolean)[] = []
+  private downs: (() => boolean)[] = []
+  private lefts: (() => boolean)[] = []
+  private rights: (() => boolean)[] = []
+  private actions: (() => boolean)[] = []
+  private unactions: (() => boolean)[] = []
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene
@@ -19,18 +19,26 @@ export class MoveKeys {
     }
 
     const codes = Phaser.Input.Keyboard.KeyCodes
-    const addKey = (key: number) => this.scene.input.keyboard!.addKey(key)
+    const addKey = (key: number) => {
+      const k = this.scene.input.keyboard!.addKey(key)
+      return () => k.isDown
+    }
 
-    this.upKeys = [addKey(codes.UP), addKey(codes.W)]
-    this.downKeys = [addKey(codes.DOWN), addKey(codes.S)]
-    this.leftKeys = [addKey(codes.LEFT), addKey(codes.A)]
-    this.rightKeys = [addKey(codes.RIGHT), addKey(codes.D)]
+    this.ups.push(addKey(codes.UP))
+    this.ups.push(addKey(codes.W))
+    this.downs.push(addKey(codes.DOWN))
+    this.downs.push(addKey(codes.S))
+    this.lefts.push(addKey(codes.LEFT))
+    this.lefts.push(addKey(codes.A))
+    this.rights.push(addKey(codes.RIGHT))
+    this.rights.push(addKey(codes.D))
 
-    this.actionKeys = [
-      addKey(codes.SPACE),
-      addKey(codes.ENTER),
-      addKey(codes.SHIFT),
-    ]
+    this.actions.push(addKey(codes.SPACE))
+    this.actions.push(addKey(codes.ENTER))
+    this.actions.push(addKey(codes.SHIFT))
+
+    this.unactions.push(addKey(codes.ESC))
+    this.unactions.push(addKey(codes.BACKSPACE))
   }
 
   initGamepads() {
@@ -41,39 +49,29 @@ export class MoveKeys {
   }
 
   initOneGamepad(pad: Phaser.Input.Gamepad.Gamepad) {
-    console.dir(pad)
-    this.pads.push(pad)
+    const p = pad
+    this.ups.push(() => p.up)
+    this.downs.push(() => p.down)
+    this.lefts.push(() => p.left)
+    this.rights.push(() => p.right)
+    this.actions.push(() => p.A)
+    this.unactions.push(() => p.B)
   }
 
   up(): boolean {
-    return (
-      this.pads.some((pad) => pad.up) || this.upKeys.some((key) => key.isDown)
-    )
+    return this.ups.some((up) => up())
   }
   down(): boolean {
-    return (
-      this.pads.some((pad) => pad.down) ||
-      this.downKeys.some((key) => key.isDown)
-    )
+    return this.downs.some((f) => f())
   }
   left(): boolean {
-    return (
-      this.pads.some((pad) => pad.left) ||
-      this.leftKeys.some((key) => key.isDown)
-    )
+    return this.lefts.some((f) => f())
   }
   right(): boolean {
-    return (
-      this.pads.some((pad) => pad.right) ||
-      this.rightKeys.some((key) => key.isDown)
-    )
+    return this.rights.some((f) => f())
   }
   action(): boolean {
-    return (
-      this.pads.some((pad) => pad.A) ||
-      this.pads.some((pad) => pad.B) ||
-      this.actionKeys.some((key) => key.isDown)
-    )
+    return this.actions.some((f) => f())
   }
 
   getVector(): Phaser.Math.Vector2 {
