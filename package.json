@@ -19,7 +19,7 @@
     "@types/node": "^20.14.2",
     "gh-pages": "^5.0.0",
     "phaser": "^3.60.0",
-    "typescript": "^5.2.2",
+    "typescript": "^5.4.5",
     "vite": "^4.5.3"
   }
 }
