@@ -15,7 +15,7 @@
   "devDependencies": {
     "@rollup/plugin-alias": "^5.0.0",
     "@rollup/plugin-commonjs": "^25.0.7",
-    "@rollup/plugin-replace": "^5.0.2",
+    "@rollup/plugin-replace": "^5.0.7",
     "@types/node": "^20.14.2",
     "gh-pages": "^5.0.0",
     "phaser": "^3.60.0",
